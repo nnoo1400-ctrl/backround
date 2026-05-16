@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>استمارة قياس الأثر - وزارة التعليم</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Cairo', 'Segoe UI', Tahoma, sans-serif;
+      background: #f9fafb;
+      color: #111827;
+      min-height: 100vh;
+      padding-bottom: 100px;
+    }
+    .container { max-width: 896px; margin: 0 auto; }
+
+    /* Header */
+    .ministry-header {
+      background: linear-gradient(to bottom, #1a5c2e, #0e3d1e);
+      color: white;
+      padding: 24px 32px;
+    }
+    .header-inner { display: flex; align-items: center; justify-content: space-between; }
+    .header-center { flex: 1; text-align: center; padding: 0 16px; }
+    .header-center .sub { color: #bbf7d0; font-size: 13px; font-weight: 300; letter-spacing: 3px; margin-bottom: 4px; }
+    .header-center h1 { font-size: 24px; font-weight: 800; margin-bottom: 4px; }
+    .header-center .sub2 { color: #86efac; font-size: 13px; font-weight: 300; }
+    .header-lines { display: flex; justify-content: center; gap: 4px; margin-top: 12px; }
+    .header-lines span { width: 32px; height: 2px; background: #4ade80; opacity: 0.6; border-radius: 9999px; display: block; }
+    .header-logo { flex: 1; display: flex; justify-content: flex-end; }
+    .header-logo img { height: 80px; width: auto; object-fit: contain; }
+    .header-spacer { flex: 1; }
+
+    /* Sections */
+    .content-area { padding: 24px 16px; display: flex; flex-direction: column; gap: 20px; }
+    .section-card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+      border: 1px solid #f3f4f6;
+      overflow: hidden;
+    }
+    .section-header {
+      background: linear-gradient(to left, #1a5c2e, #2d8c4e);
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .section-number {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.2);
+      display: flex; align-items: center; justify-content: center;
+      color: white; font-weight: 700; font-size: 14px;
+      flex-shrink: 0;
+    }
+    .section-header h2 { color: white; font-weight: 700; font-size: 15px; letter-spacing: 0.5px; }
+    .section-body { padding: 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .section-body.full { grid-template-columns: 1fr; }
+    .col-span-2 { grid-column: 1 / -1; }
+
+    /* Form fields */
+    .form-field { display: flex; flex-direction: column; gap: 6px; }
+    .form-field label {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 13px; font-weight: 600; color: #374151;
+      user-select: none;
+    }
+    .label-icon { color: #1a5c2e; display: flex; align-items: center; }
+    .form-field input,
+    .form-field select,
+    .form-field textarea {
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 13px;
+      font-family: 'Cairo', sans-serif;
+      background: white;
+      color: #111827;
+      transition: box-shadow 0.2s, border-color 0.2s;
+      outline: none;
+      width: 100%;
+      direction: rtl;
+    }
+    .form-field input:focus,
+    .form-field select:focus,
+    .form-field textarea:focus {
+      border-color: transparent;
+      box-shadow: 0 0 0 2px rgba(26,92,46,0.35);
+    }
+    .form-field select {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%231a5c2e' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: left 12px center;
+      background-size: 1.1em;
+      padding-left: 40px;
+      cursor: pointer;
+    }
+    .form-field textarea { resize: none; overflow: hidden; min-height: 80px; }
+
+    /* Link field */
+    .link-preview {
+      display: none;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: #1a5c2e;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      direction: ltr;
+      width: fit-content;
+      transition: color 0.2s;
+    }
+    .link-preview:hover { color: #2d8c4e; }
+    .link-preview svg { flex-shrink: 0; }
+    .link-preview span { max-width: 320px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .link-input { direction: ltr !important; }
+
+    /* Checkbox group */
+    .checkbox-wrap { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 4px; }
+    .checkbox-item { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+    .checkbox-item input[type="checkbox"] { width: 16px; height: 16px; accent-color: #1a5c2e; cursor: pointer; }
+    .checkbox-item span { font-size: 13px; color: #374151; transition: color 0.2s; }
+    .checkbox-item:hover span { color: #1a5c2e; }
+
+    /* Footer signatures */
+    .footer-bottom {
+      margin-top: 24px; padding-top: 16px;
+      border-top: 1px solid #f3f4f6;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .footer-watermark { font-size: 11px; color: #9ca3af; }
+    .sig-group { display: flex; gap: 16px; align-items: center; }
+    .sig-box { text-align: center; }
+    .sig-line { width: 128px; border-bottom: 1px solid #9ca3af; margin-bottom: 4px; }
+    .sig-box p { font-size: 11px; color: #6b7280; }
+
+    /* Print controls */
+    .print-controls {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 10;
+      background: white; border-top: 1px solid #e5e7eb;
+      box-shadow: 0 -2px 12px rgba(0,0,0,0.08);
+      padding: 16px 24px;
+    }
+    .print-controls-inner {
+      max-width: 896px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    }
+    .btn {
+      display: flex; align-items: center; gap: 8px;
+      padding: 9px 20px; border-radius: 8px;
+      font-size: 13px; font-weight: 600; font-family: 'Cairo', sans-serif;
+      cursor: pointer; border: none; transition: all 0.2s;
+    }
+    .btn-reset { color: #4b5563; background: white; border: 1px solid #d1d5db; }
+    .btn-reset:hover { background: #f9fafb; }
+    .btn-print { color: #1a5c2e; background: white; border: 2px solid #1a5c2e; }
+    .btn-print:hover { background: rgba(26,92,46,0.05); }
+    .btn-pdf { color: white; background: #1a5c2e; box-shadow: 0 1px 4px rgba(26,92,46,0.3); }
+    .btn-pdf:hover { background: #0e3d1e; box-shadow: 0 2px 8px rgba(26,92,46,0.4); }
+    .btn-group { display: flex; gap: 12px; }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      .section-body { grid-template-columns: 1fr; }
+      .col-span-2 { grid-column: 1; }
+      .header-center h1 { font-size: 18px; }
+      .header-logo img { height: 56px; }
+    }
+
+    /* Print */
+    @media print {
+      @page { size: A4; margin: 15mm 10mm; }
+      body { background: white !important; padding-bottom: 0; }
+      .print-controls { display: none !important; }
+      .section-card { box-shadow: none !important; border: 1px solid #d1d5db !important; border-radius: 0 !important; page-break-inside: avoid; margin-bottom: 8pt; }
+      .ministry-header { background: #1a5c2e !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .section-header { background: #1a5c2e !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .content-area { padding: 12pt 0; gap: 0; }
+      input, select, textarea { border: 1px solid #999 !important; font-size: 10pt !important; }
+      .link-preview { display: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <!-- Header -->
+  <div class="ministry-header">
+    <div class="header-inner">
+      <div class="header-spacer"></div>
+      <div class="header-center">
+        <p class="sub">وزارة التعليم</p>
+        <h1>استمارة قياس الأثر</h1>
+        <p class="sub2">للبرامج الإرشادية والتوجيهية</p>
+        <div class="header-lines">
+          <span></span><span></span><span></span><span></span><span></span>
+        </div>
+      </div>
+      <div class="header-logo">
+        <img src="https://imgg.io/images/2025/10/25/6e0b780b1ae20bcd87f34003873d64cb.png" alt="شعار وزارة التعليم" />
+      </div>
+    </div>
+  </div>
+
+  <div class="content-area">
+
+    <!-- Section 1: General Info -->
+    <div class="section-card">
+      <div class="section-header">
+        <div class="section-number">١</div>
+        <h2>المعلومات العامة</h2>
+      </div>
+      <div class="section-body">
+
+        <div class="form-field">
+          <label>
+            <span class="label-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>
+            اسم المدرسة
+          </label>
+          <input type="text" id="schoolName" placeholder="أدخل اسم المدرسة" />
+        </div>
+
+        <div class="form-field">
+          <label>
+            <span class="label-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg></span>
+            المرحلة
+          </label>
+          <select id="stage">
+            <option value="">-- اختر المرحلة --</option>
+            <option>المرحلة الابتدائية</option>
+            <option>المرحلة المتوسطة</option>
+            <option>المرحلة الثانوية</option>
+          </select>
+        </div>
+
+        <div class="form-field">
+          <label>
+            <span class="label-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span>
+            اسم البرنامج
+          </label>
+          <input type="text" id="programName" placeholder="أدخل اسم البرنامج" />
+        </div>
+
+        <div class="form-field">
+          <label>
+            <span class="label-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+            اسم منفذة البرنامج
+          </label>
+          <input type="text" id="implementerName" placeholder="أدخل اسم المنفذة" />
+        </div>
+
+        <div class="form-field">
+          <label>
+            <span class="label-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
+            التاريخ بالهجري
+          </label>
+          <input type="text" id="hijriDate" placeholder="مثال: ١٤٤٦/٠٨/١٥" />
+        </div>
+
+        <div class="form-field">
+          <label>
+            <span class="label-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
+            اليوم
+          </label>
+          <select id="day">
+            <option value="">-- اختر اليوم --</option>
+            <option>الأحد</option>
+            <option>الاثنين</option>
+            <option>الثلاثاء</option>
+            <option>الأربعاء</option>
+            <option>الخميس</option>
+          </select>
+        </div>
+
+        <div class="form-field col-span-2">
+          <label>
+            <span class="label-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+            الفئة المستهدفة
+          </label>
+          <input type="text" id="targetGroup" placeholder="مثال: طالبات المرحلة الثانوية" />
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Section 2: Impact Measurement -->
+    <div class="section-card">
+      <div class="section-header">
+        <div class="section-number">٢</div>
+        <h2>قياس الأثر</h2>
+      </div>
+      <div class="section-body">
+
+        <div class="form-field">
+          <label>
+            <span class="label-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 4.44-1.04z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-4.44-1.04z"/></svg></span>
+            المجال
+          </label>
+          <select id="field">
+            <option value="">-- اختر المجال --</option>
+            <option>مجال نفسي</option>
+            <option>مجال تربوي</option>
+            <option>مجال اجتماعي</option>
+            <option>مجال مهني</option>
+            <option>مجال تعليمي</option>
+          </select>
+        </div>
+
+        <div class="form-field">
+          <label>
+            <span class="label-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span>
+            الأداء العام للبرنامج
+          </label>
+          <select id="generalPerformance">
+            <option value="">-- اختر مستوى الأداء --</option>
+            <option>جيد</option>
+            <option>مقبول</option>
+            <option>ضعيف</option>
+          </select>
+        </div>
+
+        <div class="form-field">
+          <label>
+            <span class="label-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></span>
+            مستوى الأثر
+          </label>
+          <select id="impactLevel">
+            <option value="">-- اختر مستوى الأثر --</option>
+            <option>تأثير ملحوظ</option>
+            <option>تأثير طفيف</option>
+            <option>لا يوجد</option>
+          </select>
+        </div>
+
+        <div class="form-field">
+          <label>
+            <span class="label-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span>
+            نسبة تحقق الأهداف
+          </label>
+          <input type="text" id="goalAchievementPercent" placeholder="مثال: ٨٥%" />
+        </div>
+
+        <div class="form-field">
+          <label>
+            <span class="label-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span>
+            أدوات قياس الأثر
+          </label>
+          <select id="measurementTools">
+            <option value="">-- اختر الأداة --</option>
+            <option>استبانات</option>
+            <option>ملاحظة مباشرة</option>
+            <option>مقابلات</option>
+            <option>أخرى</option>
+          </select>
+        </div>
+
+        <div class="form-field">
+          <label>
+            <span class="label-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg></span>
+            النسبة المئوية للأثر
+          </label>
+          <input type="text" id="impactPercent" placeholder="مثال: ٧٠%" />
+        </div>
+
+        <div class="form-field col-span-2">
+          <label>
+            <span class="label-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></span>
+            أسلوب التنفيذ
+          </label>
+          <select id="implementationMethod">
+            <option value="">-- اختر أسلوب التنفيذ --</option>
+            <option>ورش عمل</option>
+            <option>برنامج</option>
+            <option>برامج الوعي الفكري</option>
+            <option>أنشطة صفية أو لا صفية</option>
+            <option>برامج توجيه طلابي</option>
+            <option>أخرى</option>
+          </select>
+        </div>
+
+        <div class="form-field">
+          <label>
+            <span class="label-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg></span>
+            الإيجابيات
+          </label>
+          <textarea id="positives" placeholder="اذكري إيجابيات البرنامج..." oninput="autoResize(this)"></textarea>
+        </div>
+
+        <div class="form-field">
+          <label>
+            <span class="label-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></span>
+            الصعوبات
+          </label>
+          <textarea id="difficulties" placeholder="اذكري الصعوبات التي واجهتها..." oninput="autoResize(this)"></textarea>
+        </div>
+
+        <div class="form-field col-span-2">
+          <label>
+            <span class="label-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></span>
+            شواهد قياس الأثر
+          </label>
+          <div class="checkbox-wrap">
+            <label class="checkbox-item"><input type="checkbox" value="صور" /><span>صور</span></label>
+            <label class="checkbox-item"><input type="checkbox" value="تقارير" /><span>تقارير</span></label>
+            <label class="checkbox-item"><input type="checkbox" value="مقاطع فيديو" /><span>مقاطع فيديو</span></label>
+            <label class="checkbox-item"><input type="checkbox" value="مواد إعلامية متنوعة" /><span>مواد إعلامية متنوعة</span></label>
+          </div>
+        </div>
+
+        <div class="form-field col-span-2">
+          <label>
+            <span class="label-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></span>
+            رابط شواهد قياس الأثر (إلزامي)
+          </label>
+          <input
+            type="text"
+            id="links"
+            class="link-input"
+            placeholder="أضيفي رابط الشواهد هنا..."
+            oninput="handleLinkInput(this)"
+          />
+          <a id="linkPreview" class="link-preview" href="#" target="_blank" rel="noopener noreferrer">
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            <span id="linkPreviewText"></span>
+          </a>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="section-card">
+      <div class="section-body full">
+        <div style="max-width: 340px; margin: 0 auto;">
+          <div class="form-field">
+            <label>
+              <span class="label-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5.52 19c.64-2.2 1.84-3 3.22-3h6.52c1.38 0 2.58.8 3.22 3"/><circle cx="12" cy="10" r="3"/><circle cx="12" cy="12" r="10"/></svg></span>
+              اسم مديرة المدرسة
+            </label>
+            <input type="text" id="principalName" placeholder="أدخل اسم مديرة المدرسة" value="منى بنت موسى الزهراني" />
+          </div>
+        </div>
+
+        <div class="footer-bottom">
+          <div class="footer-watermark">وزارة التعليم - المملكة العربية السعودية</div>
+          <div class="sig-group">
+            <div class="sig-box">
+              <div class="sig-line"></div>
+              <p>توقيع مديرة المدرسة</p>
+            </div>
+            <div class="sig-box">
+              <div class="sig-line"></div>
+              <p>توقيع منفذة البرنامج</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end content-area -->
+</div><!-- end container -->
+
+<!-- Print Controls -->
+<div class="print-controls">
+  <div class="print-controls-inner">
+    <button class="btn btn-reset" onclick="resetForm()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.82"/></svg>
+      إعادة تعيين
+    </button>
+    <div class="btn-group">
+      <button class="btn btn-print" onclick="window.print()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+        طباعة الاستمارة
+      </button>
+      <button class="btn btn-pdf" onclick="window.print()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        تصدير PDF
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  function autoResize(el) {
+    el.style.height = 'auto';
+    el.style.height = el.scrollHeight + 'px';
+  }
+
+  function isValidUrl(str) {
+    try { new URL(str); return true; } catch { return false; }
+  }
+
+  function handleLinkInput(input) {
+    const val = input.value.trim();
+    const preview = document.getElementById('linkPreview');
+    const previewText = document.getElementById('linkPreviewText');
+    if (val && isValidUrl(val)) {
+      preview.href = val;
+      previewText.textContent = val;
+      preview.style.display = 'flex';
+    } else {
+      preview.style.display = 'none';
+    }
+  }
+
+  function resetForm() {
+    if (!confirm('هل تريدين إعادة تعيين الاستمارة؟')) return;
+    const inputs = document.querySelectorAll('input[type="text"], select, textarea');
+    inputs.forEach(el => {
+      if (el.id === 'principalName') { el.value = 'منى بنت موسى الزهراني'; return; }
+      el.value = '';
+      if (el.tagName === 'TEXTAREA') el.style.height = '';
+    });
+    document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+    document.getElementById('linkPreview').style.display = 'none';
+  }
+</script>
+
+</body>
+</html>
